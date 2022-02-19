@@ -4,6 +4,7 @@ from tqdm import tqdm
 from rdkit.DataStructs.cDataStructs import CreateFromBitString, TanimotoSimilarity
 from rdkit.Chem.Fingerprints.SimilarityScreener import TopNScreener
 import pandas as pd
+from rdkit.Chem.rdmolfiles import SmilesMolSupplier
 
 
 def tanimoto(probe, target):
@@ -32,4 +33,6 @@ def top_n_chunked_tanimoto(n: int, probe: str, target_path: str, chunksize=25000
 
 
 if __name__ == '__main__':
-    pass
+    x = SmilesMolSupplier('../../Data/SAC/chemdiv_bb.csv')
+    for i in x:
+        print(i)
