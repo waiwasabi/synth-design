@@ -82,25 +82,28 @@ class ValueNetwork(nn.Module):
         self.load_state_dict(T.load(self.checkpoint_file))
 
 
+
 class ActorNetwork(nn.Module):
     def __init__(self, alpha, input_dims, max_action, fc1_dims=512,
-                 fc2_dims=512, n_actions=1024, name='actor', chkpt_dir='tmp'):
+                 fc2_dims=512, n_reactants=1024, n_reactions=58, name='actor', chkpt_dir='tmp'):
         super(ActorNetwork, self).__init__()
         self.input_dims = input_dims
+        self.max_action = max_action
         self.fc1_dims = fc1_dims
         self.fc2_dims = fc2_dims
-        self.n_actions = n_actions
+        self.n_reactants = n_reactants
+        self.n_reactions = n_reactions
         self.name = name
         self.checkpoint_dir = chkpt_dir
         self.checkpoint_file = os.path.join(self.checkpoint_dir, name + '_sac')
-        self.max_action = max_action
         self.reparam_noise = 1e-6
 
         self.fc1 = nn.Linear(*self.input_dims, self.fc1_dims)
         self.fc2 = nn.Linear(self.fc1_dims, self.fc2_dims)
         #  self.mu = nn.Linear(self.fc2_dims, self.n_actions)
         #  self.sigma = nn.Linear(self.fc2_dims, self.n_actions)
-        self.action = nn.Linear(self.fc2_dims, self.n_actions)
+        self.reactant = nn.Linear(self.fc2_dims, self.n_reactants)
+        self.reaction = nn.Linear(self.fc2_dims, self.n_reactions)
         self.optimizer = optim.Adam(self.parameters(), lr=alpha)
         self.device = T.device('cuda:0' if T.cuda.is_available() else 'cpu')
 
@@ -111,8 +114,9 @@ class ActorNetwork(nn.Module):
         prob = F.relu(prob)
         prob = self.fc2(prob)
         prob = F.relu(prob)
-        prob = self.action(prob)
-        return prob
+        prob_reactant = self.reactant(prob)
+        prob_reaction = self.reaction(prob)
+        return prob_reactant, prob_reaction
 
     def sample_normal(self, state, reparameterize=True):
         output = self.forward(state)
