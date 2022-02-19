@@ -82,7 +82,6 @@ class ValueNetwork(nn.Module):
         self.load_state_dict(T.load(self.checkpoint_file))
 
 
-
 class ActorNetwork(nn.Module):
     def __init__(self, alpha, input_dims, max_action, fc1_dims=512,
                  fc2_dims=512, n_reactants=1024, n_reactions=58, name='actor', chkpt_dir='tmp'):
