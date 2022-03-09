@@ -90,11 +90,10 @@ class MolSynthPool:
 
     def save_graph(self, save_dir):
         graphs = self.state.get_graphs()
-        jason = json.dumps(graphs)
         products = [d['product'] for d in graphs]
         qed = [QED.default(MolFromSmiles(smiles)) for smiles in products]
         with open(join(save_dir, 'routes.json'), 'w') as f:
-            json.dump(jason, f)
+            json.dump(graphs, f, indent=4)
         pd.DataFrame({'SMILES': products, 'QED': qed}).to_csv(join(save_dir, 'props.csv'))
         image_dir = join(save_dir, 'Images')
         makedirs(image_dir, exist_ok=True)

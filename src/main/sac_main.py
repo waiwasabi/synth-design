@@ -5,8 +5,6 @@ from src.main.utils import plot_learning_curve
 from src.main.environment import MolSynthPool
 from datetime import datetime
 from os import path, makedirs
-import torch
-from torchviz import make_dot
 from tqdm import tqdm
 
 
@@ -22,7 +20,7 @@ def run(target="OC(c(cc1)cc(N2)c1NC(CS(Cc1cc(F)ccc1)(=O)=O)C2=O)=O"):
     reward_data_file = 'sac_reward.csv'
     reactant_data_file = 'reactants.csv'
     run_datetime = datetime.now().strftime("%Y-%m-%d_%H.%M.%S")
-    base_save_dir = path.join('logs/', run_datetime)
+    base_save_dir = path.join('../../Data/logs/', run_datetime)
     makedirs(base_save_dir)
 
     best_score = 1

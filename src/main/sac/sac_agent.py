@@ -5,11 +5,20 @@ from src.main.sac.buffer import ReplayBuffer
 from src.main.sac.networks import ActorNetwork, CriticNetwork, ValueNetwork
 
 
-class Agent():
-    def __init__(self, alpha=0.0003, beta=0.0003, input_dims=None,
-                 env=None, gamma=0.99, n_actions=1024, max_size=1000000, tau=0.005,
-                 layer1_size=256, layer2_size=256, batch_size=256, reward_scale=5):
-        input_dims = [8] if input_dims is None else input_dims
+class Agent:
+    def __init__(
+            self,
+            input_dims,
+            alpha=0.0003,
+            beta=0.0003,
+            env=None,
+            gamma=0.99,
+            n_actions=1024,
+            max_size=1000000,
+            tau=0.005,
+            batch_size=256,
+            reward_scale=5
+    ):
         self.gamma = gamma
         self.tau = tau
         self.memory = ReplayBuffer(max_size, input_dims, n_actions)
@@ -17,7 +26,7 @@ class Agent():
         self.n_actions = n_actions
 
         self.actor = ActorNetwork(alpha, input_dims, n_reactants=n_actions,
-                                  name='actor', max_action=1)  # TODO: implement env.action_space
+                                  name='actor')
         self.critic_1 = CriticNetwork(beta, input_dims, n_actions=n_actions,
                                       name='critic_1')
         self.critic_2 = CriticNetwork(beta, input_dims, n_actions=n_actions,
@@ -30,7 +39,7 @@ class Agent():
 
     def choose_action(self, observation):
         state = T.Tensor(np.array([observation])).to(self.actor.device)
-        actions, _ = self.actor.sample_normal(state, reparameterize=True)
+        actions, _ = self.actor.sample_normal(state)
 
         return actions.cpu().detach().numpy()[0]
 
@@ -86,7 +95,7 @@ class Agent():
         value_ = self.target_value(state_).view(-1)
         value_[done] = 0.0
 
-        actions, log_probs = self.actor.sample_normal(state, reparameterize=True)
+        actions, log_probs = self.actor.sample_normal(state)
         log_probs = log_probs.view(-1)
         q1_new_policy = self.critic_1.forward(state, actions)
         q2_new_policy = self.critic_2.forward(state, actions)
@@ -99,7 +108,7 @@ class Agent():
         value_loss.backward(retain_graph=True)
         self.value.optimizer.step()
 
-        actions, log_probs = self.actor.sample_normal(state, reparameterize=True)
+        actions, log_probs = self.actor.sample_normal(state)
         log_probs = log_probs.view(-1)
         q1_new_policy = self.critic_1.forward(state, actions)
         q2_new_policy = self.critic_2.forward(state, actions)
