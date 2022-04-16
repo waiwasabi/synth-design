@@ -1,4 +1,4 @@
-from src.main.sac.hyperparameters import *
+from src.sac.hyperparameters import *
 from rdkit.DataStructs.cDataStructs import CreateFromBitString, TanimotoSimilarity
 from src.utils.reservoir_sample import sample_file
 from rdkit.Chem.rdChemReactions import ReactionFromSmarts
@@ -101,8 +101,8 @@ class MolSynthPool:
 
 
 if __name__ == '__main__':
-    mol_path = '../../Data/SAC/chemdiv_bb.csv'
-    react_path = '../../Data/SAC/hartenfeller-smirks.csv'
+    mol_path = '../../data/SAC/chemdiv_bb.csv'
+    react_path = '../../data/SAC/hartenfeller-smirks.csv'
     target = 'Cc1cc(C)n(-c2nc(N3CCOCC3)nc(N3CCOCC3)n2)n1'
     env = MolSynthPool(mol_path, react_path, target, max_t=30, num_reactions=58, num_reactants=10000)
     env.reset()

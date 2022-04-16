@@ -1,8 +1,8 @@
 import torch as T
 import torch.nn.functional as F
 import numpy as np
-from src.main.sac.buffer import ReplayBuffer
-from src.main.sac.networks import ActorNetwork, CriticNetwork, ValueNetwork
+from src.sac.buffer import ReplayBuffer
+from src.sac.networks import ActorNetwork, CriticNetwork, ValueNetwork
 
 
 class Agent:

@@ -1,16 +1,16 @@
 import numpy as np
 import pandas as pd
-from src.main.sac.sac_agent import Agent
-from src.main.utils import plot_learning_curve
-from src.main.environment import MolSynthPool
+from src.sac.sac_agent import Agent
+from src.utils.plotter import plot_learning_curve
+from src.sac.environment import MolSynthPool
 from datetime import datetime
 from os import path, makedirs
 from tqdm import tqdm
 
 
 def run(target="OC(c(cc1)cc(N2)c1NC(CS(Cc1cc(F)ccc1)(=O)=O)C2=O)=O"):
-    mol_path = '../../Data/SAC/test_chemdiv_bb.csv'
-    react_path = '../../Data/SAC/hartenfeller-smirks.csv'
+    mol_path = '../../data/SAC/test_chemdiv_bb.csv'
+    react_path = '../../data/SAC/hartenfeller-smirks.csv'
     env = MolSynthPool(mol_path, react_path, target, max_t=30, num_reactions=58, num_reactants=5000)
     agent = Agent(input_dims=[env.fp_nbits], env=env,
                   n_actions=env.num_reactants, batch_size=10)
@@ -20,7 +20,7 @@ def run(target="OC(c(cc1)cc(N2)c1NC(CS(Cc1cc(F)ccc1)(=O)=O)C2=O)=O"):
     reward_data_file = 'sac_reward.csv'
     reactant_data_file = 'reactants.csv'
     run_datetime = datetime.now().strftime("%Y-%m-%d_%H.%M.%S")
-    base_save_dir = path.join('../../Data/logs/', run_datetime)
+    base_save_dir = path.join('../../data/logs/', run_datetime)
     makedirs(base_save_dir)
 
     best_score = 1
